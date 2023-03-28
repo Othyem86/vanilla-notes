@@ -1,11 +1,20 @@
+/**
+ * The Vanilla Notes App.
+ */
 class App {
+  /**
+   * Creates the app.
+   */
   constructor() {
+    // The stored notes
     this.notes = [];
 
+    // Clicked note references
     this.title = "";
     this.text = "";
     this.id = "";
 
+    // DOM references
     this.$placeholder = document.querySelector("#placeholder");
     this.$form = document.querySelector("#form");
     this.$notes = document.querySelector("#notes");
@@ -18,9 +27,13 @@ class App {
     this.$modalText = document.querySelector(".modal-text");
     this.$modalCloseButton = document.querySelector(".modal-close-button");
 
+    // Add event listeners
     this.addEventListeners();
   }
 
+  /**
+   * Adds the necessary event listeners to the document.
+   */
   addEventListeners() {
     document.body.addEventListener("click", (event) => {
       this.handleFormClick(event);
@@ -49,6 +62,10 @@ class App {
     });
   }
 
+  /**
+   * Handles the event when the form is clicked.
+   * @param {event} event The event to be handled.
+   */
   handleFormClick(event) {
     const isFormClicked = this.$form.contains(event.target);
 
@@ -65,12 +82,18 @@ class App {
     }
   }
 
+  /**
+   * Opens the form.
+   */
   openForm() {
     this.$form.classList.add("form-open");
     this.$noteTitle.style.display = "block";
     this.$formButtons.style.display = "block";
   }
 
+  /**
+   * Closes the form.
+   */
   closeForm() {
     this.$form.classList.remove("form-open");
     this.$noteTitle.style.display = "none";
@@ -79,6 +102,10 @@ class App {
     this.$noteText.value = "";
   }
 
+  /**
+   * Opens the modal that edits the clicked note.
+   * @param {event} event The event to be handled.
+   */
   openModal(event) {
     if (event.target.closest(".note")) {
       this.$modal.classList.toggle("open-modal");
@@ -87,11 +114,21 @@ class App {
     }
   }
 
+  /**
+   * Closes the modal that edits and commits the changes to the clicked note.
+   * @param {event} event The event to be handled.
+   */
   closeModal(event) {
     this.editNote();
     this.$modal.classList.toggle("open-modal");
   }
 
+  /**
+   * Creates a new note.
+   * @param {object} note The object representing the new note.
+   * @param {string} note.title The title of the new note.
+   * @param {string} note.text The text of the new note.
+   */
   addNote({ title, text }) {
     const newNote = {
       title,
@@ -105,15 +142,10 @@ class App {
     this.closeForm();
   }
 
-  editNote() {
-    const title = this.$modalTitle.value;
-    const text = this.$modalText.value;
-    this.notes = this.notes.map((note) =>
-      note.id === Number(this.id) ? { ...note, title, text } : note
-    );
-    this.displayNotes();
-  }
-
+  /**
+   * Selects the clicked note.
+   * @param {event} event The event to be handled.
+   */
   selectNote(event) {
     const $selectedNote = event.target.closest(".note");
     if (!$selectedNote) return;
@@ -123,6 +155,19 @@ class App {
     this.id = $selectedNote.dataset.id;
   }
 
+  /** Edits the clicked note. */
+  editNote() {
+    const title = this.$modalTitle.value;
+    const text = this.$modalText.value;
+    this.notes = this.notes.map((note) =>
+      note.id === Number(this.id) ? { ...note, title, text } : note
+    );
+    this.displayNotes();
+  }
+
+  /**
+   * Displays all stored notes.
+   */
   displayNotes() {
     const hasNotes = this.notes.length > 0;
     this.$placeholder.style.display = hasNotes ? "none" : "flex";
@@ -148,4 +193,5 @@ class App {
   }
 }
 
+// Create the app
 new App();
