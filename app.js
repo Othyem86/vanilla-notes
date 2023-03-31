@@ -26,6 +26,7 @@ class App {
     this.$modalTitle = document.querySelector(".modal-title");
     this.$modalText = document.querySelector(".modal-text");
     this.$modalCloseButton = document.querySelector(".modal-close-button");
+    this.$colorToolTip = document.querySelector("#color-tooltip");
 
     // Add event listeners
     this.addEventListeners();
@@ -39,6 +40,29 @@ class App {
       this.handleFormClick(event);
       this.selectNote(event);
       this.openModal(event);
+    });
+
+    document.body.addEventListener("mouseover", (event) => {
+      this.openToolTip(event);
+    });
+
+    document.body.addEventListener("mouseout", (event) => {
+      this.closeToolTip(event);
+    });
+
+    this.$colorToolTip.addEventListener("mouseover", function () {
+      this.style.display = "flex";
+    });
+
+    this.$colorToolTip.addEventListener("mouseout", function () {
+      this.style.display = "none";
+    });
+
+    this.$colorToolTip.addEventListener("click", (event) => {
+      const color = event.target.dataset.color;
+      if (color) {
+        this.editNoteColor(color);
+      }
     });
 
     this.$form.addEventListener("submit", (event) => {
@@ -124,6 +148,33 @@ class App {
   }
 
   /**
+   * Opens the tooltip responsible for choosing the selected note's color.
+   * @param {event} event The event to be handled.
+   */
+  openToolTip(event) {
+    if (!event.target.matches(".toolbar-color")) {
+      return;
+    }
+    this.id = event.target.dataset.id;
+    const noteCoords = event.target.getBoundingClientRect();
+    const horizontal = noteCoords.left;
+    const vertical = window.scrollY - 20;
+    this.$colorToolTip.style.transform = `translate(${horizontal}px, ${vertical}px)`;
+    this.$colorToolTip.style.display = "flex";
+  }
+
+  /**
+   * Closes the tooltip responsible for choosing the selected note's color.
+   * @param {event} event The event to be handled.
+   */
+  closeToolTip(event) {
+    if (!event.target.matches(".toolbar-color")) {
+      return;
+    }
+    this.$colorToolTip.style.display = "none";
+  }
+
+  /**
    * Creates a new note.
    * @param {object} note The object representing the new note.
    * @param {string} note.title The title of the new note.
@@ -165,6 +216,15 @@ class App {
     this.displayNotes();
   }
 
+  editNoteColor(color) {
+    console.log(color);
+    this.notes = this.notes.map((note) =>
+      note.id === Number(this.id) ? { ...note, color } : note
+    );
+    console.log(this);
+    this.displayNotes();
+  }
+
   /**
    * Displays all stored notes.
    */
@@ -175,18 +235,17 @@ class App {
     this.$notes.innerHTML = this.notes
       .map(
         (note) => `
-            <div style="background: ${note.color};" class="note" data-id="${
-          note.id
-        }">
-                <div class="${note.title && "note-title"}">${note.title}</div>
-                <div class="note-text">${note.text}</div>
-                <div class="toolbar-container">
-                    <div class="toolbar">
-                        <img class="toolbar-delete" src="images/bin.svg">
-                        <img class="toolbar-color" src="images/palette.svg">
-                    </div>
+          <div style="background: ${note.color};" class="note" data-id="${note.id}">
+            <div class="${note.title && "note-title"}">${note.title}</div>
+            <div class="note-text">${note.text}</div>
+              <div class="toolbar-container">
+                <div class="toolbar">
+                  <img class="toolbar-delete" src="images/bin.svg">
+                  <img class="toolbar-color" data-id=${note.id} src="images/palette.svg">
                 </div>
+              </div>
             </div>
+          </div>
         `
       )
       .join("");
