@@ -7,7 +7,7 @@ class App {
    */
   constructor() {
     // The stored notes
-    this.notes = [];
+    this.notes = JSON.parse(localStorage.getItem("notes")) || [];
 
     // Clicked note references
     this.title = "";
@@ -30,6 +30,9 @@ class App {
 
     // Add event listeners
     this.addEventListeners();
+
+    // Render notes
+    this.render();
   }
 
   /**
@@ -194,7 +197,7 @@ class App {
     };
 
     this.notes = [...this.notes, newNote];
-    this.displayNotes();
+    this.render();
     this.closeForm();
   }
 
@@ -222,7 +225,7 @@ class App {
     }
     const id = event.target.dataset.id;
     this.notes = this.notes.filter(note => note.id != Number(id));
-    this.displayNotes();
+    this.render();
   }
 
   /** Edits the clicked note. */
@@ -232,7 +235,7 @@ class App {
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, title, text } : note
     );
-    this.displayNotes();
+    this.render();
   }
 
   /**
@@ -243,7 +246,22 @@ class App {
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, color } : note
     );
+    this.render();
+  }
+
+  /**
+   * Renders the app's content.
+   */
+  render() {
+    this.saveNotes();
     this.displayNotes();
+  }
+
+  /**
+   * Saves the notes in the local storage.
+   */
+  saveNotes() {
+    localStorage.setItem("notes", JSON.stringify(this.notes));
   }
 
   /**
