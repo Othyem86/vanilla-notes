@@ -1,0 +1,16 @@
+{
+  "name": "Vanilla Notes",
+  "short_name": "V-Notes",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone", 
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "icons": [
+    {
+      "src": "v-notes.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
