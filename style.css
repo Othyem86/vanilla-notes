@@ -77,8 +77,9 @@ header {
   margin-top: 2em;
 }
 
-.header-logo {
+#header-logo {
   height: 4em;
+  width: 4em;
 }
 
 .header-title {

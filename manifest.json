@@ -8,7 +8,7 @@
   "background_color": "#fff",
   "icons": [
     {
-      "src": "v-notes.png",
+      "src": "./images/v-notes.png",
       "sizes": "512x512",
       "type": "image/png"
     }
