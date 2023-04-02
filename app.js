@@ -40,6 +40,7 @@ class App {
       this.handleFormClick(event);
       this.selectNote(event);
       this.openModal(event);
+      this.deleteNote(event);
     });
 
     document.body.addEventListener("mouseover", (event) => {
@@ -131,6 +132,10 @@ class App {
    * @param {event} event The event to be handled.
    */
   openModal(event) {
+    if (event.target.matches(".toolbar-delete")) {
+      return;
+    }
+
     if (event.target.closest(".note")) {
       this.$modal.classList.toggle("open-modal");
       this.$modalTitle.value = this.title;
@@ -206,6 +211,20 @@ class App {
     this.id = $selectedNote.dataset.id;
   }
 
+  /**
+   * Deletes the selected note.
+   * @param {event} event The event to be handled.
+   */
+  deleteNote(event) {
+    event.stopPropagation();
+    if (!event.target.matches(".toolbar-delete")) {
+      return;
+    }
+    const id = event.target.dataset.id;
+    this.notes = this.notes.filter(note => note.id != Number(id));
+    this.displayNotes();
+  }
+
   /** Edits the clicked note. */
   editNote() {
     const title = this.$modalTitle.value;
@@ -216,12 +235,14 @@ class App {
     this.displayNotes();
   }
 
+  /**
+   * Edits the color of the selected note.
+   * @param {event} event The event to be handled.
+   */
   editNoteColor(color) {
-    console.log(color);
     this.notes = this.notes.map((note) =>
       note.id === Number(this.id) ? { ...note, color } : note
     );
-    console.log(this);
     this.displayNotes();
   }
 
@@ -240,7 +261,7 @@ class App {
             <div class="note-text">${note.text}</div>
               <div class="toolbar-container">
                 <div class="toolbar">
-                  <img class="toolbar-delete" src="images/bin.svg">
+                  <img class="toolbar-delete" data-id=${note.id} src="images/bin.svg">
                   <img class="toolbar-color" data-id=${note.id} src="images/palette.svg">
                 </div>
               </div>
